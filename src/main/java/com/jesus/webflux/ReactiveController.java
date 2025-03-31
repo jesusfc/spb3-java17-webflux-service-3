@@ -2,11 +2,13 @@ package com.jesus.webflux;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.List;
 
 /**
  * Author Jesús Fdez. Caraballo
@@ -14,11 +16,20 @@ import java.time.Duration;
  * Created on mar - 2025
  */
 @RestController
+@RequestMapping("/reactive")
 public class ReactiveController {
+
     @GetMapping("/mono/{id}")
     public Mono<String> getMono(@PathVariable Long id) {
         return Mono.just("Resultado Mono para ID: " + id)
                 .delayElement(Duration.ofSeconds(2)); // Simula una operación asíncrona
+    }
+
+    @GetMapping("/names")
+    public Flux<String> getFluxNames() {
+        List<String> names = List.of("Jesús", "María", "José", "Pedro", "Pablo");
+        return Flux.fromIterable(names)
+                .delayElements(Duration.ofSeconds(2)); // Simula una operación asíncrona
     }
 
     @GetMapping("/flux")
