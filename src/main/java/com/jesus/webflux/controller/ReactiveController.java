@@ -1,4 +1,4 @@
-package com.jesus.webflux;
+package com.jesus.webflux.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +14,11 @@ import java.util.List;
  * Author Jesús Fdez. Caraballo
  * jesus.fdez.caraballo@gmail.com
  * Created on mar - 2025
+ */
+
+/**
+ *  Para que PostMan en las peticiones actue como un cliente reactivo debemos
+ *  añadir en el header "Accept: text/event-stream"
  */
 @RestController
 @RequestMapping("/reactive")
