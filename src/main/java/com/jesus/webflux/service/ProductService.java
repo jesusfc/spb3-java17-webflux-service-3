@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
  */
 public interface ProductService {
 
-    Mono<Product> getProductById(int id);
+    Mono<Product> getProductById(long id);
 
     Mono<Product> addProduct(Product product);
 

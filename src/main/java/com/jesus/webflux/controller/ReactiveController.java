@@ -1,5 +1,8 @@
 package com.jesus.webflux.controller;
 
+import com.jesus.webflux.model.Product;
+import com.jesus.webflux.service.ProductService;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,12 +20,40 @@ import java.util.List;
  */
 
 /**
- *  Para que PostMan en las peticiones actue como un cliente reactivo debemos
- *  añadir en el header "Accept: text/event-stream"
+ * Para que PostMan en las peticiones actue como un cliente reactivo debemos
+ * añadir en el header "Accept: text/event-stream"
  */
+@AllArgsConstructor
 @RestController
 @RequestMapping("/reactive")
 public class ReactiveController {
+
+    private final ProductService productService;
+
+    /**
+     * Maneja solicitudes HTTP GET para obtener un producto por su ID.
+     *
+     * @param id El ID del producto a buscar.
+     * @return Un `Mono<Product>` que emite el producto encontrado después de un retraso de 2 segundos.
+     */
+    @GetMapping("/product/{id}")
+    public Mono<Product> getProduct(@PathVariable long id) {
+        return productService.getProductById(id)
+                .delayElement(Duration.ofSeconds(2)); // Simula una operación asíncrona
+    }
+
+
+    /**
+     * Maneja solicitudes HTTP GET para obtener todos los productos.
+     *
+     * @return Un `Flux<Product>` que emite todos los productos encontrados,
+     * cada uno después de un retraso de 2 segundos.
+     */
+    @GetMapping("/product/all")
+    public Flux<Product> getProducts() {
+        return productService.getAllProducts()
+                .delayElements(Duration.ofSeconds(2)); // Simula una operación asíncrona
+    }
 
     @GetMapping("/mono/{id}")
     public Mono<String> getMono(@PathVariable Long id) {

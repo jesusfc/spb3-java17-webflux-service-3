@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Mono<Product> getProductById(int id) {
+    public Mono<Product> getProductById(long id) {
         return Flux.fromIterable(PRODUCT_LIST).filter(product -> product.getCodProduct() == id)
                 .next()
                 .switchIfEmpty(Mono.just(new Product()));
