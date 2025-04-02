@@ -38,8 +38,7 @@ public class ReactiveController {
      */
     @GetMapping("/product/{id}")
     public Mono<Product> getProduct(@PathVariable long id) {
-        return productService.getProductById(id)
-                .delayElement(Duration.ofSeconds(2)); // Simula una operación asíncrona
+        return productService.getProductById(id).delayElement(Duration.ofSeconds(2)); // Simula una operación asíncrona
     }
 
 
@@ -51,27 +50,62 @@ public class ReactiveController {
      */
     @GetMapping("/product/all")
     public Flux<Product> getProducts() {
-        return productService.getAllProducts()
-                .delayElements(Duration.ofSeconds(2)); // Simula una operación asíncrona
+        return productService.getAllProducts().delayElements(Duration.ofSeconds(2)); // Simula una operación asíncrona
+    }
+
+
+    /**
+     * Handles HTTP GET requests to retrieve products by category.
+     *
+     * @param category The category of the products to retrieve.
+     * @return A `Flux<Product>` that emits the products found in the specified category,
+     * each after a delay of 2 seconds.
+     */
+    @GetMapping("/product/category/{category}")
+    public Flux<Product> getProductsByCategory(@PathVariable String category) {
+        return productService.getProductsByCategory(category).delayElements(Duration.ofSeconds(2)); // Simulates an asynchronous operation
+    }
+
+    /**
+     * Handles HTTP GET requests to retrieve products by name.
+     *
+     * @param name The name of the products to retrieve.
+     * @return A `Flux<Product>` that emits the products found with the specified name,
+     * each after a delay of 2 seconds.
+     */
+    @GetMapping("/product/name/{name}")
+    public Flux<Product> getProductsByName(@PathVariable String name) {
+        return productService.getProductsByName(name).delayElements(Duration.ofSeconds(2)); // Simulates an asynchronous operation
+    }
+
+
+    /**
+     * Handles HTTP GET requests to retrieve products by name and category.
+     *
+     * @param name The name of the products to retrieve.
+     * @param category The category of the products to retrieve.
+     * @return A `Flux<Product>` that emits the products found with the specified name and category,
+     *         each after a delay of 2 seconds.
+     */
+    @GetMapping("/product/name/{name}/category/{category}")
+    public Flux<Product> getProductsByNameAndCategory(@PathVariable String name, @PathVariable String category) {
+        return productService.getProductsByNameAndCategory(name, category).delayElements(Duration.ofSeconds(2)); // Simulates an asynchronous operation
     }
 
     @GetMapping("/mono/{id}")
     public Mono<String> getMono(@PathVariable Long id) {
-        return Mono.just("Resultado Mono para ID: " + id)
-                .delayElement(Duration.ofSeconds(2)); // Simula una operación asíncrona
+        return Mono.just("Resultado Mono para ID: " + id).delayElement(Duration.ofSeconds(2)); // Simula una operación asíncrona
     }
 
     @GetMapping("/names")
     public Flux<String> getFluxNames() {
         List<String> names = List.of("Jesús", "María", "José", "Pedro", "Pablo");
-        return Flux.fromIterable(names)
-                .delayElements(Duration.ofSeconds(2)); // Simula una operación asíncrona
+        return Flux.fromIterable(names).delayElements(Duration.ofSeconds(2)); // Simula una operación asíncrona
     }
 
     @GetMapping("/flux")
     public Flux<Integer> getFlux() {
-        return Flux.range(1, 10)
-                .delayElements(Duration.ofMillis(500)); // Simula una operación asíncrona
+        return Flux.range(1, 10).delayElements(Duration.ofMillis(500)); // Simula una operación asíncrona
     }
 
     @GetMapping("/stream")
