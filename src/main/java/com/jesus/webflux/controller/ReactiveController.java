@@ -3,6 +3,9 @@ package com.jesus.webflux.controller;
 import com.jesus.webflux.model.Product;
 import com.jesus.webflux.service.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,9 +39,10 @@ public class ReactiveController {
      * @param id El ID del producto a buscar.
      * @return Un `Mono<Product>` que emite el producto encontrado después de un retraso de 2 segundos.
      */
-    @GetMapping("/product/{id}")
-    public Mono<Product> getProduct(@PathVariable long id) {
-        return productService.getProductById(id).delayElement(Duration.ofSeconds(2)); // Simula una operación asíncrona
+    @GetMapping(value ="/product/{id}")
+    public ResponseEntity<Mono<Product>> getProduct(@PathVariable long id) {
+        Mono<Product> productById = productService.getProductById(id).delayElement(Duration.ofSeconds(2)); // Simula una operación asíncrona
+        return new ResponseEntity<>(productById, HttpStatus.OK); // Simula una operación asíncrona
     }
 
 
@@ -49,8 +53,8 @@ public class ReactiveController {
      * cada uno después de un retraso de 2 segundos.
      */
     @GetMapping("/product/all")
-    public Flux<Product> getProducts() {
-        return productService.getAllProducts().delayElements(Duration.ofSeconds(2)); // Simula una operación asíncrona
+    public ResponseEntity<Flux<Product>> getProducts() {
+        return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK); // Simula una operación asíncrona
     }
 
 
@@ -82,10 +86,10 @@ public class ReactiveController {
     /**
      * Handles HTTP GET requests to retrieve products by name and category.
      *
-     * @param name The name of the products to retrieve.
+     * @param name     The name of the products to retrieve.
      * @param category The category of the products to retrieve.
      * @return A `Flux<Product>` that emits the products found with the specified name and category,
-     *         each after a delay of 2 seconds.
+     * each after a delay of 2 seconds.
      */
     @GetMapping("/product/name/{name}/category/{category}")
     public Flux<Product> getProductsByNameAndCategory(@PathVariable String name, @PathVariable String category) {
@@ -93,8 +97,8 @@ public class ReactiveController {
     }
 
     @GetMapping("/mono/{id}")
-    public Mono<String> getMono(@PathVariable Long id) {
-        return Mono.just("Resultado Mono para ID: " + id).delayElement(Duration.ofSeconds(2)); // Simula una operación asíncrona
+    public ResponseEntity<Mono<String>> getMono(@PathVariable long id) {
+        return new ResponseEntity<>(Mono.just("Resultado Mono para ID: " + id), HttpStatus.OK); // Simula una operación asíncrona
     }
 
     @GetMapping("/names")
