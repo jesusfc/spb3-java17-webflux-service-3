@@ -50,7 +50,31 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Mono<Product> addProduct(Product product) {
-        PRODUCT_LIST.add(product);
+        try {
+            if (PRODUCT_LIST.stream().anyMatch(p -> p.getCodProduct() == product.getCodProduct())) {
+                // Update existing product  on the list
+                PRODUCT_LIST.stream()
+                        .filter(p -> p.getCodProduct() == product.getCodProduct())
+                        .findFirst()
+                        .ifPresent(p -> {
+                            p.setName(product.getName());
+                            p.setCategory(product.getCategory());
+                            p.setUnitPrice(product.getUnitPrice());
+                            p.setStock(product.getStock());
+                        });
+            } else {
+                // Get the last product id
+                int lastId = PRODUCT_LIST.stream()
+                        .mapToInt(Product::getCodProduct)
+                        .max()
+                        .orElse(0);
+                // Set the new product id
+                product.setCodProduct(lastId + 1);
+                PRODUCT_LIST.add(product);
+            }
+        } catch (Exception e) {
+            return Mono.error(e);
+        }
         return Mono.just(product);
     }
 

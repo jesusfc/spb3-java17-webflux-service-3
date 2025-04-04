@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class Product {
 
-    private int codProduct;
+    private Integer codProduct;
     private String name;
     private String category;
     private double unitPrice;
