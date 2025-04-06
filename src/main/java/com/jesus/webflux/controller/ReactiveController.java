@@ -59,19 +59,19 @@ public class ReactiveController {
     }
 
     @GetMapping("/product/category/{category}")
-    public Flux<Product> getProductsByCategory(@PathVariable String category) {
-        return productService.getProductsByCategory(category).delayElements(Duration.ofSeconds(2)); // Simulates an asynchronous operation
+    public ResponseEntity<Flux<Product>> getProductsByCategory(@PathVariable String category) {
+        return new ResponseEntity<>(productService.getProductsByCategory(category).delayElements(Duration.ofSeconds(2)), HttpStatus.OK); // Simulates an asynchronous operation
     }
 
     @GetMapping("/product/name/{name}")
-    public Flux<Product> getProductsByName(@PathVariable String name) {
-        return productService.getProductsByName(name).delayElements(Duration.ofSeconds(2)); // Simulates an asynchronous operation
+    public ResponseEntity<Flux<Product>> getProductsByName(@PathVariable String name) {
+        return new ResponseEntity<>(productService.getProductsByName(name).delayElements(Duration.ofSeconds(2)), HttpStatus.OK); // Simulates an asynchronous operation
     }
 
 
     @GetMapping("/product/name/{name}/category/{category}")
-    public Flux<Product> getProductsByNameAndCategory(@PathVariable String name, @PathVariable String category) {
-        return productService.getProductsByNameAndCategory(name, category).delayElements(Duration.ofSeconds(2)); // Simulates an asynchronous operation
+    public ResponseEntity<Flux<Product>> getProductsByNameAndCategory(@PathVariable String name, @PathVariable String category) {
+        return new ResponseEntity<>(productService.getProductsByNameAndCategory(name, category).delayElements(Duration.ofSeconds(2)), HttpStatus.OK); // Simulates an asynchronous operation
     }
 
     @GetMapping("/mono/{id}")
