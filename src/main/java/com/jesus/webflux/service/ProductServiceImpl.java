@@ -129,7 +129,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Flux<Product> getProductsByNameAndCategory(String name, String category) {
-        return null;
+        Predicate<Product> predicate = product -> product.getName().equalsIgnoreCase(name) && product.getCategory().equalsIgnoreCase(category);
+        return Flux.fromIterable(PRODUCT_LIST).filter(predicate).delayElements(java.time.Duration.ofMillis(500));
     }
 
     @Override
