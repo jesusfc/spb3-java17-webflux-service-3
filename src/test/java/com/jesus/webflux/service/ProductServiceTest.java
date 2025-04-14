@@ -1,7 +1,10 @@
 package com.jesus.webflux.service;
 
 import com.jesus.webflux.model.Product;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Flux;
@@ -13,11 +16,37 @@ import reactor.test.StepVerifier;
  * jesus.fdez.caraballo@gmail.com
  * Created on abr - 2025
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
 public class ProductServiceTest {
 
     @Autowired
     ProductService productService;
+
+
+    @Test
+    @Order(1)
+    void addProductTest() {
+        Product newProduct = new Product(null, "New Product", "New Category", 10.0, 5);
+        Mono<Product> productMono = productService.addProduct(newProduct);
+        StepVerifier.create(productMono)
+                .expectNextMatches(product -> product.getName().equalsIgnoreCase("New Product"))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @Order(2)
+    void deleteProductTest() {
+        productService.deleteProduct(108);
+    }
+
+    @Test
+    @Order(3)
+    void getProductByIdDeletedTest() {
+        StepVerifier.create(productService.getProductById(108))
+                .verifyComplete();
+    }
 
     // Test for getProductById
     @Test
@@ -80,16 +109,6 @@ public class ProductServiceTest {
     }
 
     @Test
-    void addProductTest() {
-        Product newProduct = new Product(108, "New Product", "New Category", 10.0, 5);
-        Mono<Product> productMono = productService.addProduct(newProduct);
-        StepVerifier.create(productMono)
-                .expectNextMatches(product -> product.getName().equalsIgnoreCase("New Product"))
-                .expectComplete()
-                .verify();
-    }
-
-    @Test
     void updateProductTest() {
         Product updatedProduct = new Product(100, "Updated Product", "Updated Category", 20.0, 10);
         Mono<Product> productMono = productService.updateProduct(updatedProduct);
@@ -98,14 +117,6 @@ public class ProductServiceTest {
                     // Check that the product was updated in the list
                     assert productService.getProductById(100).block().getName().equalsIgnoreCase("Updated Product");
                 })
-                .verifyComplete();
-    }
-
-    @Test
-    void deleteProductTest() {
-        productService.deleteProduct(100);
-        StepVerifier.create(productService.getProductById(100))
-                .expectNextCount(0) // Check that the product was deleted
                 .verifyComplete();
     }
 

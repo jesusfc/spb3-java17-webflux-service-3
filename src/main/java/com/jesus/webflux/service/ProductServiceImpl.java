@@ -6,10 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Author Jesús Fdez. Caraballo
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
 
-    private static final List<Product> PRODUCT_LIST = Arrays.asList(
+    private static List<Product> PRODUCT_LIST = Arrays.asList(
             new Product(100, "Azúcar", "Alimentación", 1.10, 20),
             new Product(101, "Leche", "Alimentación", 1.20, 15),
             new Product(102, "Jabón", "Limpieza", 0.89, 30),
@@ -50,11 +51,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Mono<Product> addProduct(Product product) {
-        try {
-            if (PRODUCT_LIST.stream().anyMatch(p -> p.getCodProduct() == product.getCodProduct())) {
+
+            if (product.getCodProduct() != null) {
                 // Update existing product  on the list
                 PRODUCT_LIST.stream()
-                        .filter(p -> p.getCodProduct() == product.getCodProduct())
+                        .filter(p -> Objects.equals(p.getCodProduct(), product.getCodProduct()))
                         .findFirst()
                         .ifPresent(p -> {
                             p.setName(product.getName());
@@ -70,18 +71,19 @@ public class ProductServiceImpl implements ProductService {
                         .orElse(0);
                 // Set the new product id
                 product.setCodProduct(lastId + 1);
-                PRODUCT_LIST.add(product);
+
+                // Add the new product to the list
+                List<Product> productList = new ArrayList<>(PRODUCT_LIST);
+                productList.add(product);
+                PRODUCT_LIST = productList;
             }
-        } catch (Exception e) {
-            return Mono.error(e);
-        }
         return Mono.just(product);
     }
 
     @Override
     public Mono<Product> updateProduct(Product product) {
         return Mono.justOrEmpty(PRODUCT_LIST.stream()
-                .filter(p -> p.getCodProduct() == product.getCodProduct())
+                .filter(p -> Objects.equals(p.getCodProduct(), product.getCodProduct()))
                 .findFirst()
                 .map(p -> {
                     p.setName(product.getName());
@@ -94,7 +96,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(int id) {
-        PRODUCT_LIST.removeIf(product -> product.getCodProduct() == id);
+        List<Product> productList = new ArrayList<>(PRODUCT_LIST);
+        productList.removeIf(product -> product.getCodProduct() == id);
+        PRODUCT_LIST = productList;
     }
 
     @Override
