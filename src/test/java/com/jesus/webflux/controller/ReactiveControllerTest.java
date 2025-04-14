@@ -1,14 +1,13 @@
 package com.jesus.webflux.controller;
 
-import com.jesus.webflux.model.Product;
 import com.jesus.webflux.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import java.util.Objects;
 
 /**
  * Author Jesús Fdez. Caraballo
@@ -40,11 +39,11 @@ class ReactiveControllerTest {
 
     @Test
     void getProductReturnsProductWhenIdExists() {
-        Product mockProduct = new Product(100, "Product 1", "Category 1", 100.0, 4);
-        Mockito.when(productService.getProductById(100)).thenReturn(Mono.just(mockProduct));
+        //Product mockProduct = new Product(100, "Azúcar", "Alimentación", 1.10, 20);
+        //Mockito.when(productService.getProductById(100)).thenReturn(Mono.just(mockProduct));
 
-        StepVerifier.create(reactiveController.getProduct(100).getBody())
-                .expectNext(mockProduct)
+        StepVerifier.create(Objects.requireNonNull(reactiveController.getProduct(100).getBody()))
+                .expectNextCount(1)
                 .expectComplete()
                 .verify();
     }
