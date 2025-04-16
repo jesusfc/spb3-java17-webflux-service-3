@@ -37,7 +37,7 @@ public class ProductServiceTest {
 
     @Test
     @Order(2)
-    void deleteProductTest() {
+    void deleteProductTest() throws Exception {
         productService.deleteProduct(108);
     }
 

@@ -17,7 +17,7 @@ public interface ProductService {
 
     Mono<Product> updateProduct(Product product);
 
-    void deleteProduct(int id);
+    void deleteProduct(long id) throws Exception;
 
     Flux<Product> getAllProducts();
 

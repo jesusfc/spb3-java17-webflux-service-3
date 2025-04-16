@@ -52,31 +52,31 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Mono<Product> addProduct(Product product) {
 
-            if (product.getCodProduct() != null) {
-                // Update existing product  on the list
-                PRODUCT_LIST.stream()
-                        .filter(p -> Objects.equals(p.getCodProduct(), product.getCodProduct()))
-                        .findFirst()
-                        .ifPresent(p -> {
-                            p.setName(product.getName());
-                            p.setCategory(product.getCategory());
-                            p.setUnitPrice(product.getUnitPrice());
-                            p.setStock(product.getStock());
-                        });
-            } else {
-                // Get the last product id
-                int lastId = PRODUCT_LIST.stream()
-                        .mapToInt(Product::getCodProduct)
-                        .max()
-                        .orElse(0);
-                // Set the new product id
-                product.setCodProduct(lastId + 1);
+        if (product.getCodProduct() != null) {
+            // Update existing product  on the list
+            PRODUCT_LIST.stream()
+                    .filter(p -> Objects.equals(p.getCodProduct(), product.getCodProduct()))
+                    .findFirst()
+                    .ifPresent(p -> {
+                        p.setName(product.getName());
+                        p.setCategory(product.getCategory());
+                        p.setUnitPrice(product.getUnitPrice());
+                        p.setStock(product.getStock());
+                    });
+        } else {
+            // Get the last product id
+            int lastId = PRODUCT_LIST.stream()
+                    .mapToInt(Product::getCodProduct)
+                    .max()
+                    .orElse(0);
+            // Set the new product id
+            product.setCodProduct(lastId + 1);
 
-                // Add the new product to the list
-                List<Product> productList = new ArrayList<>(PRODUCT_LIST);
-                productList.add(product);
-                PRODUCT_LIST = productList;
-            }
+            // Add the new product to the list
+            List<Product> productList = new ArrayList<>(PRODUCT_LIST);
+            productList.add(product);
+            PRODUCT_LIST = productList;
+        }
         return Mono.just(product);
     }
 
@@ -95,10 +95,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(int id) {
+    public void deleteProduct(long id) throws Exception {
+
+        // Check if the product exists
+        PRODUCT_LIST.stream()
+                .filter(p -> p.getCodProduct() == id)
+                .findFirst()
+                .orElseThrow(() -> new Exception("Product not found"));
+
         List<Product> productList = new ArrayList<>(PRODUCT_LIST);
         productList.removeIf(product -> product.getCodProduct() == id);
         PRODUCT_LIST = productList;
+
     }
 
     @Override

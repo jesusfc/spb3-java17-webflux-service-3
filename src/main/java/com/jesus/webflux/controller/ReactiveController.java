@@ -53,6 +53,16 @@ public class ReactiveController {
         return new ResponseEntity<>(addedProduct, HttpStatus.CREATED); // Simula una operación asíncrona
     }
 
+    @DeleteMapping(value = "/product/delete/{id}")
+    public ResponseEntity<Mono<Product>> deleteProduct(@PathVariable long id) {
+        try {
+            productService.deleteProduct(id);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Simula una operación asíncrona
+        }
+        return new ResponseEntity<>(HttpStatus.OK); // Simula una operación asíncrona
+    }
+
     @GetMapping("/product/all")
     public ResponseEntity<Flux<Product>> getProducts() {
         return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK); // Simula una operación asíncrona
